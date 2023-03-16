@@ -21,9 +21,11 @@ train_input = train_input.reshape(-1, 1)						# 행, 렬 을 의미. -1은 디�
 test_input = test_input.reshape(-1, 1)
 
 knr = KNeighborsRegressor()
+knr.n_neighbors = 3
 knr.fit(train_input, train_target)
 
-print(knr.score(test_input, test_target))						# 출력값 = 0.992... , R^2 = 1 - (target - predict)^2 의 합 / (target - average)^2 의 합
+print(knr.score(train_input, train_target))						# 출력값 = 0.992... , R^2 = 1 - (target - predict)^2 의 합 / (target - average)^2 의 합
+print(knr.score(test_input, test_target))
 
 test_prediction = knr.predict(test_input)
 mae = mean_absolute_error(test_target, test_prediction)
