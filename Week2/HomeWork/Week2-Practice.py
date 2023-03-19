@@ -8,17 +8,13 @@ LoadTarget = np.load("data_target.npy")
 
 train_input, test_input, train_target, test_target = train_test_split(LoadInput, LoadTarget, stratify=LoadTarget, random_state = 1800)
 
-# print(train_input)
-# print(test_input)
-# print(train_target)
-# print(test_target)
-
-kn = KNeighborsClassifier()
+kn = KNeighborsClassifier(n_neighbors=5)
+print("Neighbors : 5")
 
 print("-------")
-print(len(LoadInput))
+print("LoadInput :", len(LoadInput))
 print("-------")
-print(len(LoadTarget))
+print("LoadTarget :", len(LoadTarget))
 print("-------")
 
 mean = np.mean(train_input, axis=0)
@@ -27,34 +23,24 @@ train_scaled = (train_input - mean) / std
 test_scaled = (test_input - mean) / std
 
 kn.fit(train_scaled, train_target)
-print(kn.score(test_scaled, test_target))
+print("Predict Score :", kn.score(test_scaled, test_target))
+print("--------")
 
-# print("new1 =", kn.predict([new1]))
-# print("new2 =", kn.predict([new2]))
-# print("new3 =", kn.predict([new3]))
-# print("new4 =", kn.predict([new4]))
+test_data = ([20, 300] - mean) / std
 
-# distances1, indexes1 = kn.kneighbors([new1])
-# distances2, indexes2 = kn.kneighbors([new2])
-# distances3, indexes3 = kn.kneighbors([new3])
-# distances4, indexes4 = kn.kneighbors([new4])
+distances, indexes = kn.kneighbors([test_data])
+print("Test Data Predict =", kn.predict([test_data]))
 
-plt.scatter(train_scaled[train_target==1, 0], train_scaled[train_target==1, 1], c='black')
+plt.scatter(train_scaled[train_target==1, 0], train_scaled[train_target==1, 1], c='yellow')
 plt.scatter(train_scaled[train_target==2, 0], train_scaled[train_target==2, 1], c="blue")
 plt.scatter(train_scaled[train_target==3, 0], train_scaled[train_target==3, 1], c="red")
 plt.scatter(train_scaled[train_target==4, 0], train_scaled[train_target==4, 1], c="green")
+plt.scatter(test_data[0], test_data[1], marker="^", s=200)
+
+plt.scatter(train_scaled[indexes, 0], train_scaled[indexes, 1], marker="X", c="black")
 
 # for label in np.unique(train_target):
 #     plt.scatter(train_scaled[train_target==label, 0], train_scaled[train_target==label, 1])
-
-# plt.scatter(new1[0], new1[1], marker="^")
-# plt.scatter(new2[0], new2[1], marker="^")
-# plt.scatter(new3[0], new3[1], marker="^")
-# plt.scatter(new4[0], new4[1], marker="^")
-# plt.scatter(train_scaled[indexes1, 0], train_scaled[indexes1, 1], marker="D")
-# plt.scatter(train_scaled[indexes2, 0], train_scaled[indexes2, 1], marker="D")
-# plt.scatter(train_scaled[indexes3, 0], train_scaled[indexes3, 1], marker="D")
-# plt.scatter(train_scaled[indexes4, 0], train_scaled[indexes4, 1], marker="D")
 
 plt.xlabel("X")
 plt.ylabel("Y")
