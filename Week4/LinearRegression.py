@@ -25,7 +25,7 @@ train_poly = poly.transform(train_input)
 
 print(train_poly.shape)
 
-poly.get_feature_names()
+poly.get_feature_names_out()
 ['x0', 'x1', 'x2', 'x0^2', 'x0 x1', 'x0 x2', 'x1^2', 'x2^2', 'x1 x2']
 
 test_poly = poly.transform(test_input)
