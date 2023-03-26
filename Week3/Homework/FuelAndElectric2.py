@@ -90,7 +90,7 @@ print("----------------------------------------------")
 # 쉽게 생각하면, degree값(차수)의 변화에 따라 정확도가 달라지게 됨
 # 기본 degree의 default = 2
 # include_bias = 0차항의 유무
-poly = PolynomialFeatures(degree=2, include_bias=False)
+poly = PolynomialFeatures(degree=6, include_bias=False)
 
 # 학습 모델을 학습
 poly.fit(train_input)
@@ -144,7 +144,12 @@ print("---------------------- 테스트 정확도 ----------------------")
 print(ridge.score(test_scaled, test_target))
 print("------------------------------------------------------------")
 
-alpha_list = [0.001, 0.01, 0.1, 1, 10, 100]
+# alpha_list = [0.001, 0.01, 0.1, 1, 10, 100]
+# alpha_list = np.arange(0.01, 1, 0.01)
+# alpha_list = np.arange(1, 2, 0.01)
+# alpha_list = np.arange(2, 3, 0.01)
+alpha_list = np.arange(3, 4, 0.01)
+# alpha_list = np.arange(4, 6, 0.01)
 
 train_score_ridge = []
 test_score_ridge = []
@@ -152,7 +157,7 @@ train_score_lasso = []
 test_score_lasso = []
 
 for alpha in alpha_list:
-	ridge = Ridge(alpha = alpha)
+	ridge = Ridge(alpha=alpha)
 	ridge.fit(train_scaled, train_target)
 	train_score_ridge.append(ridge.score(train_scaled, train_target))
 	test_score_ridge.append(ridge.score(test_scaled, test_target))
@@ -163,15 +168,24 @@ plt.xlabel("Alpha Value")
 plt.ylabel("R^2")
 plt.show()
 
-ridge = Ridge(alpha=1)
-ridge.fit(train_scaled, train_target)
+for alpha in alpha_list:
+	train_score = 0
+	test_score = 0
+	diff = 0
+	ridge = Ridge(alpha=alpha)
+	ridge.fit(train_scaled, train_target)
 
-print("--------------- Ridge Model, 규제 강도 있음, alpha = 1 ---------------")
-print("----------------------------- 학습 정확도 ----------------------------")
-print(ridge.score(train_scaled, train_target))
-print("---------------------------- 테스트 정확도 ---------------------------")
-print(ridge.score(test_scaled, test_target))
-print("-----------------------------------------------------------------------")
+	print("--------------- Ridge Model, 규제 강도 있음, alpha = {} ---------------".format(alpha))
+	print("----------------------------- 학습 정확도 ----------------------------")
+	train_score = ridge.score(train_scaled, train_target)
+	print(train_score)
+	print("---------------------------- 테스트 정확도 ---------------------------")
+	test_score = ridge.score(test_scaled, test_target)
+	print(test_score)
+	print("-------------------------------- 오차율 -------------------------------")
+	diff = abs(train_score - test_score) / train_score * 100
+	print("학습 정확도와 테스트 정확도의 오차율 = {:.2f}%".format(diff))
+	print("-----------------------------------------------------------------------")
 
 # Lasso Model
 lasso = Lasso()
@@ -185,7 +199,7 @@ print(lasso.score(test_scaled, test_target))
 print("-----------------------------------------------------------")
 
 for alpha in alpha_list:
-	lasso = Lasso(alpha = alpha)
+	lasso = Lasso(alpha=alpha)
 	lasso.fit(train_scaled, train_target)
 	train_score_lasso.append(lasso.score(train_scaled, train_target))
 	test_score_lasso.append(lasso.score(test_scaled, test_target))
@@ -196,12 +210,21 @@ plt.xlabel("Alpha Value")
 plt.ylabel("R^2")
 plt.show()
 
-lasso = Lasso(alpha=0.1)
-lasso.fit(train_scaled, train_target)
+for alpha in alpha_list:
+	train_score = 0
+	test_score = 0
+	diff = 0
+	lasso = Lasso(alpha=alpha)
+	lasso.fit(train_scaled, train_target)
 
-print("--------------- Lasso Model, 규제 강도 있음, alpha = 0.1 ---------------")
-print("------------------------------ 학습 정확도 -----------------------------")
-print(lasso.score(train_scaled, train_target))
-print("----------------------------- 테스트 정확도 ----------------------------")
-print(lasso.score(test_scaled, test_target))
-print("------------------------------------------------------------------------")
+	print("--------------- Lasso Model, 규제 강도 있음, alpha = {} ---------------".format(alpha))
+	print("------------------------------ 학습 정확도 -----------------------------")
+	train_score = lasso.score(train_scaled, train_target)
+	print(train_score)
+	print("----------------------------- 테스트 정확도 ----------------------------")
+	test_score = lasso.score(test_scaled, test_target)
+	print(test_score)
+	print("--------------------------------- 오차율 --------------------------------")
+	diff = abs(train_score - test_score) / train_score * 100
+	print("학습 정확도와 테스트 정확도의 오차율 = {:.2f}%".format(diff))
+	print("------------------------------------------------------------------------")
