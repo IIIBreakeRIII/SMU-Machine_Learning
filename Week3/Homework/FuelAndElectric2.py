@@ -34,7 +34,9 @@ input_data = np.array(input_data)
 input_target = np.array(input_target)
 
 # 데이터 나누기
-train_input, test_input, train_target, test_target = train_test_split(input_data, input_target, random_state=42)
+# test_size = 테스트 데이터셋의 비율(float)이나 갯수(int) (default = 0.25)
+# train_size = 학습 데이터셋의 비율(float)이나 개수(int) (default = 1 - test_size) 
+train_input, test_input, train_target, test_target = train_test_split(input_data, input_target, test_size=0.4, random_state=42)
 
 # 나눠진 데이터 길이 확인
 print(len(train_input))
@@ -70,9 +72,7 @@ lr.fit(train_input, train_target)
 
 # 기울기와 절편 구하기
 # lr.coef : 기울기
-# lr.intercept : 절편
-# _ : ML에서 유도된 결과를 나타내는 기호
-print(lr.coef_, lr.intercept_)
+# lr.intercept : 절편 _ : ML에서 유도된 결과를 나타내는 기호 print(lr.coef_, lr.intercept_)
 print("coef =", lr.coef_)
 print("intercept =", lr.intercept_)
 
@@ -148,8 +148,11 @@ print("------------------------------------------------------------")
 # alpha_list = np.arange(0.01, 1, 0.01)
 # alpha_list = np.arange(1, 2, 0.01)
 # alpha_list = np.arange(2, 3, 0.01)
-alpha_list = np.arange(3, 4, 0.01)
+# alpha_list = np.arange(3, 4, 0.01)
 # alpha_list = np.arange(4, 6, 0.01)
+# alpha_list = np.arange(0, 11, 1)
+# alpha_list = np.arange(1, 3, 0.1)
+alpha_list = np.arange(1.5, 1.6, 0.01)
 
 train_score_ridge = []
 test_score_ridge = []
