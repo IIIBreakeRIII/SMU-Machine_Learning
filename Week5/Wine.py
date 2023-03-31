@@ -32,7 +32,7 @@ print(lr.score(test_scaled, test_target))
 
 print(lr.coef_, lr.intercept_)
 
-dt = DecisionTreeClassifier(max_depth=3, random_state = 42)
+dt = DecisionTreeClassifier(max_depth = 3, random_state = 42)
 dt.fit(train_scaled, train_target)
 
 print(dt.score(train_scaled, train_target))
