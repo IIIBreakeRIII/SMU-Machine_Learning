@@ -9,7 +9,8 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.tree import plot_tree
 from scipy.stats import uniform, randint
 
-#DataFrame ==> np ==> 표준화(평균을 중심으로 동일한 표준편차)
+# 트리 알고리즘
+# DataFrame ==> np ==> 표준화(평균을 중심으로 동일한 표준편차)
 wine = pd.read_csv('wine.csv')
 
 data = wine[['alcohol', 'sugar', 'pH']].to_numpy()
