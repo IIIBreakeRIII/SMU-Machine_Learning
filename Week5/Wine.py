@@ -42,6 +42,11 @@ train_scaled = ss.transform(train_input)
 test_scaled = ss.transform(test_input)
 
 # 로지스틱 회귀
+# 분류 모델
+# 이진 분류 : True / False 로 나타남
+# 다중 분류 : 종속형 변수가 2개 이상의 카테고리로 분류됨
+# 위키피디아 : 독립 변수의 선형 결합을 이용하여 사건의 발생 가능성을 예측하는 데
+# 사용되는 통계 기법
 lr = LogisticRegression()
 lr.fit(train_scaled, train_target)
 
@@ -49,3 +54,22 @@ print(lr.score(train_scaled, train_target))
 print(lr.score(test_scaled, test_target))
 
 print(lr.coef_, lr.intercept_)
+
+# DecisionTreeClassifier 정의
+# max_depth : Tree 최고 깊이(루트 노드를 제외한 노드의)
+dt = DecisionTreeClassifier(max_depth = 3, random_state = 42)
+dt.fit(train_scaled, train_target)
+
+print(dt.score(train_scaled, train_target))
+print(dt.score(test_scaled, test_target))
+
+# matplotlib 으로 트리 표현
+plt.figure(figsize=(20, 15))
+plot_tree(dt, filled=True, feature_names=['alcohol', 'sugar', 'pH'])
+plt.show()
+
+# feature_importances_ : 변수 중요도(특성 중요도)
+# 각 변수가 모델에서 예측하는 결과에 얼마나 큰 영향을 미치는지 나타내는 지표
+print(dt.feature_importances_)
+
+sub_input, val_input, sub_target, val_target = train_test_split(train_input, train_target, test_size=0.2, random_state=42)

@@ -10,6 +10,9 @@ input_data = pd.read_excel('./Fuel_Power.xlsx', header=None)
 input_target = pd.read_excel('./Electric_Power.xlsx', header=None)
 input_data = input_data.drop(columns=[0])
 
+print(len(input_data))
+print(len(input_target))
+
 input_data = np.array(input_data)
 input_target = np.array(input_target)
 
