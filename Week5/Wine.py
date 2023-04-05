@@ -57,18 +57,19 @@ test_scaled = ss.transform(test_input)
 lr = LogisticRegression()
 lr.fit(train_scaled, train_target)
 
-print(lr.score(train_scaled, train_target))
-print(lr.score(test_scaled, test_target))
-
-print(lr.coef_, lr.intercept_)
+print("lr.score(train_scaled, train_target) :", lr.score(train_scaled, train_target))
+print("lr.score(test_scaled, test_target) :", lr.score(test_scaled, test_target))
+print("lr.coef_, lr.intercept :", lr.coef_, lr.intercept_)
+print("")
 
 # DecisionTreeClassifier 정의
 # max_depth : Tree 최고 깊이(루트 노드를 제외한 노드의)
 dt = DecisionTreeClassifier(max_depth = 3, random_state = 42)
 dt.fit(train_scaled, train_target)
 
-print(dt.score(train_scaled, train_target))
-print(dt.score(test_scaled, test_target))
+print("dt.score(train_scaled, train_target) :", dt.score(train_scaled, train_target))
+print("dt.score(test_scaled, test_target) :", dt.score(test_scaled, test_target))
+print("")
 
 # matplotlib 으로 트리 표현
 plt.figure(figsize=(20, 15))
@@ -77,7 +78,8 @@ plt.show()
 
 # feature_importances_ : 변수 중요도(특성 중요도)
 # 각 변수가 모델에서 예측하는 결과에 얼마나 큰 영향을 미치는지 나타내는 지표
-print(dt.feature_importances_)
+print("dt.feature_importances_ :", dt.feature_importances_)
+print("")
 
 # 다른 모델들의 사용에 따른 비교 검증을 위한 테스트 세트 남겨두기
 sub_input, val_input, sub_target, val_target = train_test_split(train_input, train_target, test_size=0.2, random_state=42)
@@ -87,17 +89,20 @@ sub_input, val_input, sub_target, val_target = train_test_split(train_input, tra
 # 교차 검증의 경우 데이터를 여러 개의 폴드(fold)로 나누고
 # 각 폴드를 훈련 및 평가에 사용하는 과정을 반복하여 모델의 일반화 성능을 평가
 scores = cross_validate(dt, train_input, train_target)
-print(scores)
-print(np.mean(scores['test_score']))
+print("scores :", scores)
+print("np.mean(scores['test_score']) :", np.mean(scores['test_score']))
+print("")
 
 # StratifiedKFold(Default Parameters)
 scores = cross_validate(dt, train_input, train_target, cv=StratifiedKFold())
-print(np.mean(scores['test_score']))
+print("np.mean(scores['test_score'])(After StratifiedKFold, Default Parameters) :", np.mean(scores['test_score']))
+print("")
 
 # StratifiedKFold
 splitter = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
 scores = cross_validate(dt, train_input, train_target, cv=splitter)
-print(np.mean(scores['test_score']))
+print("np.mean(scores['test_score'])(After StratifiedKFold, Use Parameters) :", np.mean(scores['test_score']))
+print("")
 
 params = {'min_impurity_decrease' : [0.0001, 0.0002, 0.0003, 0.0004, 0.0005]}
 
@@ -107,6 +112,48 @@ gs = GridSearchCV(DecisionTreeClassifier(random_state=42), params, n_jobs=-1)
 gs.fit(train_input, train_target)
 
 dt = gs.best_estimator_
-print('dt.score =', dt.score(train_input, train_target))
-print('gs.best_params_ =', gs.best_params_)
-print('gs.cv_results_ =', gs.cv_results_['mean_test_score'])
+print('dt.score :', dt.score(train_input, train_target))
+print('gs.best_params_ :', gs.best_params_)
+print('gs.cv_results_ :', gs.cv_results_['mean_test_score'])
+print("")
+
+# 0부터 10사이의 랜덤한 정수를 반환해주는 변수 rgen
+# rvs() = random variates의 약자로 지정된 분포에서 무작위 표본을 추출하는 함수
+print("rgen.rvs(10)")
+rgen = randint(0, 10)
+rgen.rvs(10)
+print("")
+
+# rgen.rvs(1000) = rgen 객체에서 1000개의 무작위 표본을 추출하여 반환
+# Example : rgen.normal(0, 1, size=1000) = 평균 0, 표준편차 1인 정규분포에서
+# 1000개의 무작위 표본 추출
+# return_counts의 경우, unique() 함수의 중복되지 않은 값의 배열과 함께
+# 해당 값들이 출현한 빈도수를 반환하도록 설정
+# 즉, unique() 함수가 중복되지 않은 값 배열과 그 값들의 출현 빈도수 배열 두개를 반환
+# 아래 코드는, rgen 객체에서 생성된 1000개의 무작위 표본에서 각 값의 빈도수를 계산,
+# 각 값과 빈도수를 포함하는 두 개의 배열을 반환
+print("np.unique(ren.rvs(1000), return_counts=True)")
+np.unique(rgen.rvs(1000), return_counts=True)
+print("")
+
+# 두 수 사이의 랜덤한 소수(0.001과 같은) 반환
+print("ugen.rvs(10)")
+ugen = uniform(0, 1)
+ugen.rvs(10)
+print("")
+
+# 랜덤 서치
+params = {'min_impurity_decrease': uniform(0.0001, 0.001),
+					"max_depth": randint(20, 50),
+					"min_samples_split": randint(2, 25),
+					"min_samples_leaf": randint(1, 25)}
+
+gs = RandomizedSearchCV(DecisionTreeClassifier(random_state=42), params, n_iter=100, n_jobs=-1, random_state=42)
+gs.fit(train_input, train_target)
+
+print("gs.best_params_ :", gs.best_params_)
+
+print("np.max(gs.cv_results_['mean_test_score']) :", np.max(gs.cv_results_['mean_test_score']))
+
+dt = gs.best_estimator_
+print("dt.score(test_input, test_target) :", dt.score(test_input, test_target))
