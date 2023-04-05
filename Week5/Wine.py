@@ -3,9 +3,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Cross_Validate : 교차 검증, 분리한 데이터를 교차하여 모델을 검증
-# GridSearchCV : 분류 or 회귀 알고리즘에 사용되는 하이퍼파라미터를 순차적으로 입력해 학습을 하고 측정을 하면서 가장 좋은 파라미터를 알려줌
-# RandomizedSearchCV : 모든 조합을 다 시도하지는 않고, 각 반복마다 임의의 값만 대입해 지정한 횟수마큼 평가/Users/breaker/Desktop/BreakeR/SMU/ML/Week3/Code/FuelAndElectric.py 
-from sklearn.model_selection import train_test_split, cross_validate, GridSearchCV, RandomizedSearchCV
+# GridSearchCV : 분류 or 회귀 알고리즘에 사용되는 하이퍼파라미터를 
+# 순차적으로 입력해 학습을 하고 측정을 하면서 가장 좋은 파라미터를 알려줌
+# 하이퍼파라미터 : 모델의 성능을 조정하고 모델의 동작을 제어하는 매개 변수
+# RandomizedSearchCV : 모든 조합을 다 시도하지는 않고, 각 반복마다 임의의 값만 대입해 지정한 횟수마큼 평가
+# KFold : 학습 세트와 검증 세트를 나눠서 반복 검증하는 방식
+# K 값만큼의 폴드 세트에 K번의 학습과 검증을 통해 K번 평가
+# 과대 적합의 오류가 생길 수 있음
+# StratifiedKFold : target에 속성값의 개수를 동일하게 하게 가져감으로서 KFold와 같이
+# 데이터가 한 곳에 몰리는 것을 방지
+from sklearn.model_selection import train_test_split, cross_validate, GridSearchCV, RandomizedSearchCV, StratifiedKFold
 
 # StandardScaler : 표준화
 from sklearn.preprocessing import StandardScaler
@@ -82,3 +89,24 @@ sub_input, val_input, sub_target, val_target = train_test_split(train_input, tra
 scores = cross_validate(dt, train_input, train_target)
 print(scores)
 print(np.mean(scores['test_score']))
+
+# StratifiedKFold(Default Parameters)
+scores = cross_validate(dt, train_input, train_target, cv=StratifiedKFold())
+print(np.mean(scores['test_score']))
+
+# StratifiedKFold
+splitter = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
+scores = cross_validate(dt, train_input, train_target, cv=splitter)
+print(np.mean(scores['test_score']))
+
+params = {'min_impurity_decrease' : [0.0001, 0.0002, 0.0003, 0.0004, 0.0005]}
+
+# GridSearchCV는 머신러닝 알고리즘에 사용되는 하이퍼 파라미터를 입력해 
+# 학습을 하고 측정을 하면서 가장 좋은 파라미터를 알려줌
+gs = GridSearchCV(DecisionTreeClassifier(random_state=42), params, n_jobs=-1)
+gs.fit(train_input, train_target)
+
+dt = gs.best_estimator_
+print('dt.score =', dt.score(train_input, train_target))
+print('gs.best_params_ =', gs.best_params_)
+print('gs.cv_results_ =', gs.cv_results_['mean_test_score'])
