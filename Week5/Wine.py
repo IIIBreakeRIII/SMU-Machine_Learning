@@ -72,4 +72,13 @@ plt.show()
 # 각 변수가 모델에서 예측하는 결과에 얼마나 큰 영향을 미치는지 나타내는 지표
 print(dt.feature_importances_)
 
+# 다른 모델들의 사용에 따른 비교 검증을 위한 테스트 세트 남겨두기
 sub_input, val_input, sub_target, val_target = train_test_split(train_input, train_target, test_size=0.2, random_state=42)
+
+# 교차 검증
+# DecisionTreeClassifier 모델을 train_input 값과 train_target값에 대한 교차 검증 수행
+# 교차 검증의 경우 데이터를 여러 개의 폴드(fold)로 나누고
+# 각 폴드를 훈련 및 평가에 사용하는 과정을 반복하여 모델의 일반화 성능을 평가
+scores = cross_validate(dt, train_input, train_target)
+print(scores)
+print(np.mean(scores['test_score']))
