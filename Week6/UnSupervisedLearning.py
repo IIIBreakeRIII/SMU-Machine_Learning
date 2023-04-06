@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from sklearn.cluster import KMeans
+
 fruits = np.load('fruits_300.npy')
 print(fruits.shape)
 
