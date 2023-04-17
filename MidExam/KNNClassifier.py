@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
-from scipy.special import expit
+from scipy.special import expit, softmax
 
 fish = pd.read_csv('https://bit.ly/fish_csv_data')
 fish.head()
@@ -53,3 +53,22 @@ decisions = lr.decision_function(train_bream_smelt[:5])
 print(decisions)
 
 print(expit(decisions))
+
+# C = 규제, max_iter = 반복 계산 횟수
+lr = LogisticRegression(C=20, max_iter=1000)
+lr.fit(train_scaled, train_target)
+
+print(lr.score(train_scaled, train_target))
+print(lr.score(test_scaled, test_target))
+
+proba = lr.predict_proba(test_scaled[:5])
+print(np.round(proba, decimals=3))
+
+print(lr.coef_.shape, lr.intercept_.shape)
+
+# 소프트맥스 함수
+decision = lr.decision_function(test_scaled[:5])
+print(np.round(decision, decimals=2))
+
+proba = softmax(decision, axis=1)
+print(np.round(proba, decimals=3))
