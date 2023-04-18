@@ -2,10 +2,11 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from sklearn.model_selection import train_test_split, cross_validate, StratifiedKFold, GridSearchCV
+from sklearn.model_selection import train_test_split, cross_validate, StratifiedKFold, GridSearchCV, RandomizedSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier, plot_tree
+from scipy.stats import uniform, randint
 
 # DataFrame --> np --> 표준화(평균을 중심으로 동일한 표준편차)
 
@@ -71,4 +72,22 @@ print(gs.best_params_)
 
 print(gs.cv_results_['mean_test_score'])
 
+rgen = randint(0, 10)
+rgen.rvs(10)
 
+np.unique(rgen.rvs(1000), return_counts=True)
+
+ugen = uniform(0, 1)
+ugen.rvs(10)
+
+params = {'min_impurity_decrease': uniform(0.0001, 0.001), 'max_depth': randint(20, 50), 'min_samples_split': randint(2, 25), 'min_samples_leaf': randint(1, 25)}
+
+gs = RandomizedSearchCV(DecisionTreeClassifier(random_state=42), params, n_iter=100, n_jobs=-1, random_state=42)
+gs.fit(train_input, train_target)
+
+print(gs.best_params_)
+
+print(np.max(gs.cv_results_['mean_test_score']))
+
+dt = gs.best_estimator_
+print(dt.score(test_input, test_target))
