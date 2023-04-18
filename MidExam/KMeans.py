@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import cross_validate
 
 fruits = np.load('fruits_300.npy')
 fruits_2d = fruits.reshape(-1, 100*100)
@@ -103,9 +105,57 @@ pca.fit(fruits_2d)
 
 print(pca.components_.shape)
 
-draw_fruits(pca.components_.rehshape(-1, 100, 100))
+draw_fruits(pca.components_.reshape(-1, 100, 100))
 
 print(fruits_2d.shape)
 
 fruits_pca = pca.transform(fruits_2d)
 print(fruits_pca.shape)
+
+# 재구성
+fruits_inverse = pca.inverse_transform(fruits_pca)
+print(fruits_inverse.shape)
+
+fruits_reconstruct = fruits_inverse.reshape(-1, 100, 100)
+
+# 설명된 분산
+print(np.sum(pca.explained_variance_ratio_))
+
+plt.plot(pca.explained_variance_ratio_)
+
+# 분류기와 함께 사용하기
+lr = LogisticRegression()
+target = np.array([0] * 100 + [1] * 100 + [2] * 100)
+
+scores = cross_validate(lr, fruits_2d, target)
+print(np.mean(scores['test_score']))
+print(np.mean(scores['fit_time']))
+
+scores = cross_validate(lr, fruits_pca, target)
+print(np.mean(scores['test_score']))
+print(np.mean(scores['fit_time']))
+
+pca = PCA(n_components=0.5)
+pca.fit(fruits_2d)
+print(pca.n_components_)
+
+fruits_pca = pca.transform(fruits_2d)
+print(fruits_pca.shape)
+
+scores = cross_validate(lr, fruits_pca, target)
+print(np.mean(scores['test_score']))
+print(np.mean(scores['fit_time']))
+
+# 군집과 함께 사용하기
+km = KMeans(n_clusters=3, random_state=42)
+km.fit(fruits_pca)
+
+print(np.unique(km.labels_, return_counts=True))
+
+# 시각화
+for label in range(0, 3):
+	data = fruits_pca[km.labels_ == label]
+	plt.scatter(data[:, 0], data[:, 1])
+
+plt.legend(['apple', 'banana', 'pineapple'])
+plt.show()
