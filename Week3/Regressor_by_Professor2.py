@@ -39,7 +39,7 @@ print(lr.coef_, lr.intercept_)
 
 plt.scatter(train_input, train_target)
 
-# plt.plot([15, 50], [15*lr.coef_+lr.intercept_, 50*lr.coef_+lr.intercept_])
+plt.plot([15, 50], [15*lr.coef_+lr.intercept_, 50*lr.coef_+lr.intercept_])
 
 plt.scatter(50, 1241.8, marker='^')
 plt.show()
