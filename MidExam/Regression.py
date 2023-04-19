@@ -49,3 +49,15 @@ print("new knr.socre - test")
 print(knr.score(test_input, test_target))
 
 # 학습 데이터 값 범위를 넘어서는 데이터
+
+# 50cm 농어의 이웃 구하기
+distances, indexes = knr.kneighbors([[50]])
+# 훈련 세트의 산점도 그리기
+plt.scatter(train_input, train_target)
+# 훈련 세트 중에서 이웃 샘플만 다시 그림
+plt.scatter(train_input[indexes], train_target[indexes], marker='D')
+# 50cm 농어 데이터
+plt.scatter(50, 1033, marker='^')
+plt.show()
+
+
