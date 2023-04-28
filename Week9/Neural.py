@@ -1,10 +1,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import tensorflow as tf
 
-from sklearn.model_selection import cross_validate
+from sklearn.model_selection import cross_validate, train_test_split
 from sklearn.linear_model import SGDClassifier
 
 from tensorflow import keras
+
+print(tf.config.list_physical_devices('GPU'))
 
 (train_input, train_target), (test_input, test_target) = keras.datasets.fashion_mnist.load_data()
 
@@ -34,4 +37,12 @@ scores = cross_validate(sc, train_scaled, train_target, n_jobs=-1)
 print("np.mean(scores['test_score'])")
 print(np.mean(scores['test_score']))
 
+train_scaled, val_scaled, train_target, val_target = train_test_split(train_scaled, train_target, test_size=0.2, random_state=42)
 
+print("train_scaled.shape, train_target.shape")
+print(train_scaled.shape, train_target.shape)
+print("val_scaled.shape, val_target.shape")
+print(val_scaled.shape, val_target.shape)
+
+dense = keras.layers.Dense(10, activation='softmax', input_shape=(784,))
+model = keras.Sequential(dense)
