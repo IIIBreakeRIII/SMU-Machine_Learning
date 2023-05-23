@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import numpy as np
 
-# 1000개의 단어
+# 500개의 단어
 (train_input, train_target), (test_input, test_target) = imdb.load_data(num_words=500)
 
 print(train_input.shape, test_input.shape)
@@ -16,7 +16,7 @@ train_input, val_input, train_target, val_target = train_test_split(train_input,
 lengths = np.array([len(x) for x in train_input])
 print(np.mean(lengths), np.median(lengths))
 
-# 150개의 표본
+# 100개의 표본
 train_seq = pad_sequences(train_input, maxlen=100)
 val_seq = pad_sequences(val_input, maxlen=100)
 
