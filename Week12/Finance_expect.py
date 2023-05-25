@@ -1,3 +1,5 @@
+# https://wikidocs.net/173005
+
 # 데이터 로드
 import FinanceDataReader as fdr
 import numpy as np
@@ -6,7 +8,7 @@ import matplotlib.pyplot as plt
 from keras import Sequential
 from keras.layers import Dense, LSTM, Dropout
 # 삼성전자
-df = fdr.DataReader('005930', '2018-05-04', '2022-12-31')
+df = fdr.DataReader('005930', '2023-01-02', '2023-05-25')
 
 # 데이터 전처리(0과 1 사이 값으로 변환)
 def MinMaxScaler(data):
