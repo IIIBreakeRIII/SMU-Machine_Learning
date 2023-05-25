@@ -51,7 +51,7 @@ print('테스트 데이터의 크기 =', test_X.shape, test_y.shape)
 
 # 모델 구성
 model = Sequential()
-model.add(LSTM(units=20, activation='relu', return_sequences=True, input_shape(10, 4)))
+model.add(LSTM(units=20, activation='relu', return_sequences=True, input_shape=(10, 4)))
 model.add(Dropout(0.1))
 model.add(LSTM(units=20, activation='relu'))
 model.add(Dropout(0.1))
