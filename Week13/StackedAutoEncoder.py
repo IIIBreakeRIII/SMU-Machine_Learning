@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 import numpy as np
 
+from sklearn.manifold import TSNE
 from tensorflow import keras
 
 (X_train_full, y_train_full), (X_test, y_test) = keras.datasets.fashion_mnist.load_data()
@@ -28,7 +29,6 @@ stacked_decoder = keras.models.Sequential([
 stacked_ae = keras.models.Sequential([stacked_encoder, stacked_decoder])
 stacked_ae.compile(loss="binary_crossentropy", optimizer=keras.optimizers.SGD(learning_rate=1.5), metrics=[rounded_accuracy])
 history = stacked_ae.fit(X_train, X_train, epochs=20, validation_data=(X_valid, X_valid))
-
 def plot_image(image):
     plt.imshow(image, cmap="binary")
     plt.axis("off")
@@ -42,4 +42,13 @@ def show_reconstructions(model, images=X_valid, n_images=5):
         plot_image(reconstructions[image_index])
 
 show_reconstructions(stacked_ae)
+plt.show()
+
+X_valid_compressed = stacked_encoder.predict(X_valid)
+tsne = TSNE()
+X_valid_2D = tsne.fit_transform(X_valid_compressed)
+X_valid_2D = (X_valid_2D - X_valid_2D.min()) / (X_valid_2D.max() - X_valid_2D.min())
+
+plt.scatter(X_valid_2D[:, 0], X_valid_2D[:, 1], c=y_valid, s=10, cmap="tab10")
+plt.axis("off")
 plt.show()
